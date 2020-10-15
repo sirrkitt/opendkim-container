@@ -2,18 +2,18 @@ FROM alpine:3.12
 LABEL maintainer="Jacob Lemus Peschel <jacob@tlacuache.us>"
 ENV V=2.10.3
 
+ENV UID=500
+ENV GID=500
+
 COPY entrypoint.sh /entrypoint.sh
 
 RUN     apk update --no-cache && \
         apk add -U --no-cache opendkim opendkim-utils && \
-        mkdir -p /config /socket/opendkim /run/opendkim && \
-        chown -R root:root /socket && \
-	chown -R opendkim:opendkim /config /run/opendkim && \
+        mkdir -p /run/opendkim && \
         chmod a+x /entrypoint.sh
 
-EXPOSE 389
-EXPOSE 636
+VOLUME ["/config", "/socket", "/data"]
 
-VOLUME ["/config", "/socket"]
+EXPOSE 8891
 
 ENTRYPOINT ["/entrypoint.sh"]
